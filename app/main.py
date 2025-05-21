@@ -4,12 +4,13 @@ class Person:
     def __init__(self, name: str, age: int) -> None:
         self.name = name
         self.age = age
+        self.wife = None
+        self.husband = None
         Person.people[self.name] = self
 
 
 def create_person_list(people_data: list) -> list:
     Person.people = {}
-
     person_list = []
 
     for person_dict in people_data:
@@ -17,22 +18,29 @@ def create_person_list(people_data: list) -> list:
         person_list.append(person)
 
     for person_dict in people_data:
-        current_person = Person.people[person_dict["name"]]
+        name = person_dict["name"]
+        current_person = Person.people[name]
 
-        if "wife" in person_dict and person_dict["wife"] is not None:
-            wife_name = person_dict["wife"]
-            if wife_name in Person.people:
-                current_person.wife = Person.people[wife_name]
+        wife_name = person_dict.get("wife")
+        if wife_name:
+            wife = Person.people.get(wife_name)
+            if wife:
+                current_person.wife = wife
             else:
                 print(
-                    f"Ostrzeżenie: Żona \"{wife_name}\" dla \"{current_person.name}\" nie została znaleziona w danych wejściowych.")
+                    f"Warning: Wife \"{wife_name}\" for \"{name}\" "
+                    "was not found in input data."
+                )
 
-        if "husband" in person_dict and person_dict["husband"] is not None:
-            husband_name = person_dict["husband"]
-            if husband_name in Person.people:
-                current_person.husband = Person.people[husband_name]
+        husband_name = person_dict.get("husband")
+        if husband_name:
+            husband = Person.people.get(husband_name)
+            if husband:
+                current_person.husband = husband
             else:
                 print(
-                    f"Ostrzeżenie: Mąż \"{husband_name}\" dla \"{current_person.name}\" nie został znaleziony w danych wejściowych.")
+                    f"Warning: Husband \"{husband_name}\" for \"{name}\" "
+                    "was not found in input data."
+                )
 
     return person_list
